@@ -13,6 +13,7 @@
             <Label fx:id="titulLabel" text="Label" />
             <Label fx:id="autorLabel" text="Label" />
             <Label fx:id="rokLabel" text="Label" />
+            <Label fx:id="chybaLabel" text="Label" />
          </children>
       </VBox>
    </center>

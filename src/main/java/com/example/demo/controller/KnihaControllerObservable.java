@@ -23,6 +23,9 @@ public class KnihaControllerObservable {
     private Label rokLabel;
 
     @FXML
+    private Label chybaLabel;
+
+    @FXML
     private TextField titulField;
 
     @FXML
@@ -57,6 +60,7 @@ public class KnihaControllerObservable {
         }
         else{
             System.err.println("Nebyla vybrána kniha");
+            chybaLabel.setText("Chyba");
         }
 
 
@@ -67,6 +71,7 @@ public class KnihaControllerObservable {
     public void handlePridejKnihu(){
         if (titulField.getText().isEmpty() ||  autorField.getText().isEmpty() || rokField.getText().isEmpty()){
             System.err.println("Nebyly vyplněny všechny informace");
+            chybaLabel.setText("Chyba");
         }
         else {
 
@@ -76,6 +81,7 @@ public class KnihaControllerObservable {
                 a = true;
             } catch (NumberFormatException e){
                 System.err.println("V roku smí být jen čísla");
+                chybaLabel.setText("Chyba");
                 a = false;
             }
 
@@ -99,6 +105,7 @@ public class KnihaControllerObservable {
             }
             else {
                 System.err.println("V roce musí být jen čísla");
+                chybaLabel.setText("Chyba");
             }
 
 
@@ -111,11 +118,27 @@ public class KnihaControllerObservable {
         Kniha selected = knihaListView.getSelectionModel().getSelectedItem();
 
         if (selected != null){
-            knihy.remove(selected);
-            knihaListView.setItems(knihy);
+            try {
+                int rok = Integer.parseInt(rokField.getText());
+                a = true;
+            } catch (NumberFormatException e){
+                System.err.println("V roku smí být jen čísla");
+                chybaLabel.setText("Chyba");
+                a = false;
+            }
+            if (a){
+                knihy.remove(selected);
+                knihaListView.setItems(knihy);
+            }
+            else {
+                System.err.println("Chyba v zadání úpravy");
+                chybaLabel.setText("Chyba");
+            }
+
         }
         else{
             System.err.println("Musí být vybrána kniha");
+            chybaLabel.setText("Chyba");
         }
     }
 
@@ -129,26 +152,34 @@ public class KnihaControllerObservable {
         }
         else {
             System.err.println("Není vybráná kniha");
+            chybaLabel.setText("Chyba");
         }
     }
 
     public void handleHledatKnihu(){
+        boolean sigma = false;
+
         if (hledatField.getText().isEmpty()){
             System.err.println("Pole hledání je prázdné");
+            chybaLabel.setText("Chyba");
         }
         else {
-            if (knihy.contains(hledatField.getText())){
-                for (Kniha k : knihy){
-                    if (hledatField.getText().equals(k.getTitul())){
-                        knihaListView.getSelectionModel().select(k);
-                        handleVyberKnihu();
-                        break;
-                    }
+            for (Kniha k : knihy){
+                if (hledatField.getText().equals(k.getTitul())){
+                    knihaListView.getSelectionModel().select(k);
+                    handleVyberKnihu();
+                    sigma = false;
+                    break;
+                }
+                else {
+                    sigma = true;
                 }
             }
-            else {
-                System.err.println("Zadaná kniha se nenachází v seznamu");
+            if (sigma){
+                System.err.println("Kniha se nenachází v seznamu");
+                chybaLabel.setText("Chyba");
             }
+
 
 
         }
